@@ -11,6 +11,14 @@ abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : V
     private val mutableStateModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
     val stateModel: StateFlow<MODEL> get() = mutableStateModel
     
+    private val mutableStateNowPlayingModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
+    val stateNowPlayingModel: StateFlow<MODEL> get() = mutableStateNowPlayingModel
+    
+    fun updateNowPLayingModel(block: (MODEL) -> MODEL) {
+        println("updateNowPLayingModel BaseViewModel called")
+        mutableStateNowPlayingModel.update(block)
+    }
+    
     abstract fun handleIntent(appIntent: INTENT)
     
     fun updateModel(block: (MODEL) -> MODEL) {

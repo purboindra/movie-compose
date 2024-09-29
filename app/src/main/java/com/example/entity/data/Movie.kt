@@ -13,7 +13,9 @@ data class Movie(
     @SerialName("total_pages")
     val totalPages: Int,
     @SerialName("total_results")
-    val totalResults: Int
+    val totalResults: Int,
+    @SerialName("dates")
+    val dates: Dates? = null,
 ) {
     @Serializable
     data class Result(
@@ -47,3 +49,11 @@ data class Movie(
         val voteCount: Int
     )
 }
+
+@Serializable
+data class Dates(
+    @SerialName("maximum")
+    val maximum: String? = "",
+    @SerialName("minimum")
+    val minimum: String? = ""
+)

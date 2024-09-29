@@ -75,7 +75,7 @@ fun PopularMovieListCompose(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(horizontal = 4.dp)
+                    .padding(horizontal = 7.dp)
                     .width(145.dp),
             ) {
                 Surface (shadowElevation = 7.dp, shape = RoundedCornerShape(8.dp), modifier = Modifier

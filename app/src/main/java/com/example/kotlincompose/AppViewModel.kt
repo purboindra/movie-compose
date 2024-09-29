@@ -10,11 +10,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 sealed class AppIntent {
-    data object FetchNowPlayingMovie : AppIntent()
+    data object PopularMovie : AppIntent()
+    data object NowPlaying:AppIntent()
 }
 
 data class AppModel(
-    val movieResponseState: State<Movie> = State.Idle
+    val movieResponseState: State<Movie> = State.Idle,
+    val nowPlayingResponseState: State<Movie> = State.Idle
 )
 
 class AppViewModel(
@@ -22,15 +24,25 @@ class AppViewModel(
 ) : BaseViewModel<AppModel, AppIntent>(AppModel()) {
     override fun handleIntent(appIntent: AppIntent) {
         when (appIntent) {
-            is AppIntent.FetchNowPlayingMovie -> fetchNowPlayingMovie()
+            is AppIntent.PopularMovie -> fetchPopularMovie()
+            is  AppIntent.NowPlaying -> fetchNowPlayingMovie()
         }
     }
     
     
-    private fun fetchNowPlayingMovie() = viewModelScope.launch {
-        movieRepository.fetchNowPlaying().stateIn(this).collectLatest { state ->
+    private fun fetchPopularMovie() = viewModelScope.launch {
+        movieRepository.popularMovie().stateIn(this).collectLatest { state ->
             updateModel {
                 it.copy(movieResponseState = state)
+            }
+        }
+    }
+    
+    private fun fetchNowPlayingMovie() = viewModelScope.launch {
+        println("fetchNowPlayingMovie AppViewModel called")
+        movieRepository.nowPlayingMovie().stateIn(this).collectLatest { state ->
+            updateNowPLayingModel {
+                it.copy(nowPlayingResponseState = state)
             }
         }
     }
