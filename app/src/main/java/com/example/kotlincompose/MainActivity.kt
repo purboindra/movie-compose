@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumble.appyx.core.composable.ChildRenderer
 import com.example.kotlincompose.ui.theme.KotlinComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -71,8 +71,9 @@ class MainActivity : ComponentActivity() {
                                 )
                                 Spacer(modifier = Modifier.height(32.dp))
                                 PopularMovieCompose(Modifier.padding(innerPadding))
-                                Spacer(modifier = Modifier.height(32.dp))
-                                NowPlayingCompose(Modifier.padding(innerPadding))
+                             
+//                                Spacer(modifier = Modifier.height(32.dp))
+//                                NowPlayingCompose(Modifier.padding(innerPadding))
                             }
                         }
                         
