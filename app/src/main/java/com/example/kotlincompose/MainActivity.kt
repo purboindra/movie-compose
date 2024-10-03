@@ -26,59 +26,66 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumble.appyx.core.composable.ChildRenderer
+import com.bumble.appyx.core.integration.NodeHost
+import com.bumble.appyx.core.integrationpoint.NodeActivity
 import com.example.kotlincompose.ui.theme.KotlinComposeTheme
+import com.example.routes.RootNode
 
-class MainActivity : ComponentActivity() {
+class MainActivity : NodeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             KotlinComposeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                            .padding(horizontal = 12.dp)
-                    ) {
-                        item {
-                            Column {
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    text = "Find your favorite movie",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp
-                                )
-                                Spacer(modifier = Modifier.height(5.dp))
-                                OutlinedTextField(
-                                    value = "",
-                                    onValueChange = { },
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    label = { Text(text = "Search movie") },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Default.Search,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    shape = RoundedCornerShape(12.dp),
-                                    textStyle = TextStyle(fontSize = 18.sp),
-                                    colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = Color.White,
-                                        unfocusedContainerColor = Color.White,
-                                    )
-                                )
-                                Spacer(modifier = Modifier.height(32.dp))
-                                PopularMovieCompose(Modifier.padding(innerPadding))
-                             
-//                                Spacer(modifier = Modifier.height(32.dp))
-//                                NowPlayingCompose(Modifier.padding(innerPadding))
-                            }
-                        }
-                        
-                    }
+                NodeHost(integrationPoint = appyxV1IntegrationPoint) {
+                    RootNode(buildContext = it)
                 }
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    LazyColumn(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(innerPadding)
+//                            .padding(horizontal = 12.dp)
+//                    ) {
+//                        item {
+//                            Column {
+//                                Spacer(modifier = Modifier.height(12.dp))
+//                                Text(
+//                                    text = "Find your favorite movie",
+//                                    fontWeight = FontWeight.Bold,
+//                                    fontSize = 18.sp
+//                                )
+//                                Spacer(modifier = Modifier.height(5.dp))
+//                                OutlinedTextField(
+//                                    value = "",
+//                                    onValueChange = { },
+//                                    modifier = Modifier
+//                                        .fillMaxWidth(),
+//                                    label = { Text(text = "Search movie") },
+//                                    leadingIcon = {
+//                                        Icon(
+//                                            imageVector = Icons.Default.Search,
+//                                            contentDescription = null
+//                                        )
+//                                    },
+//                                    shape = RoundedCornerShape(12.dp),
+//                                    textStyle = TextStyle(fontSize = 18.sp),
+//                                    colors = TextFieldDefaults.colors(
+//                                        focusedContainerColor = Color.White,
+//                                        unfocusedContainerColor = Color.White,
+//                                    )
+//                                )
+//                                Spacer(modifier = Modifier.height(32.dp))
+//                                PopularMovieCompose(Modifier.padding(innerPadding))
+//
+////                                Spacer(modifier = Modifier.height(32.dp))
+////                                NowPlayingCompose(Modifier.padding(innerPadding))
+//                            }
+//                        }
+//
+//                    }
+//                }
+//
             }
         }
     }

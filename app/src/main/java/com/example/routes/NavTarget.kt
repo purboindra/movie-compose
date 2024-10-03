@@ -1,6 +1,16 @@
 package com.example.routes
 
-sealed class NavTarget {
-    object Screen1 : NavTarget()
-    object Screen2 : NavTarget()
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+
+sealed class NavTarget : Parcelable {
+    @Parcelize
+    object Child1 : NavTarget()
+    
+    @Parcelize
+    object Child2 : NavTarget()
+    
+    @Parcelize
+    object Child3 : NavTarget()
 }
