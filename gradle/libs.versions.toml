@@ -13,6 +13,7 @@ view-model = "2.6.1"
 serialization = "2.0.20"
 coil = "2.7.0"
 appyx = "1.6.0-alpha01"
+compose-material = "1.7.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +40,8 @@ viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 appyx-core = { module = "com.bumble.appyx:core", version.ref = "appyx" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose-material" }
+
 
 
 [plugins]

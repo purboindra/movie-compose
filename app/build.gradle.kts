@@ -75,7 +75,7 @@ dependencies {
     // APPYX/NAVIGATION
     implementation(libs.appyx.core)
     
-//    implementation(libs.serialization)
+    // implementation(libs.serialization)
     
     // KTOR
     implementation(libs.ktor.client.core)
@@ -89,4 +89,7 @@ dependencies {
     implementation(libs.viewmodel.compose)
     
     implementation(libs.coil)
+    
+    // COMPOSE MATERIAL
+    implementation(libs.compose.material)
 }
