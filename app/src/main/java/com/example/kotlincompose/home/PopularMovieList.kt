@@ -2,6 +2,7 @@ package com.example.kotlincompose.home
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,12 +34,15 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
+import com.bumble.appyx.navmodel.backstack.operation.push
 import com.example.entity.data.Movie
+import com.example.routes.LocalNavBackStack
+import com.example.routes.NavTarget
 import java.text.DecimalFormat
 
 
 @SuppressLint("DefaultLocale")
-fun rating(rating: Double):String {
+fun rating(rating: Double): String {
     val decimalFormat = DecimalFormat("#.#")
     val formattedRating = decimalFormat.format(rating)
     return formattedRating
@@ -51,6 +55,9 @@ fun PopularMovieListCompose(
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     movies: List<Movie.Result>
 ) {
+    
+    val backStack = LocalNavBackStack.current
+    
     LazyRow(
         modifier = modifier
             .fillMaxWidth()
@@ -76,11 +83,15 @@ fun PopularMovieListCompose(
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(horizontal = 7.dp)
-                    .width(145.dp),
+                    .width(145.dp)
+                    .clickable { backStack.push(NavTarget.MovieDetail(id = item.id.toString())) },
             ) {
-                Surface (shadowElevation = 7.dp, shape = RoundedCornerShape(8.dp), modifier = Modifier
-                    .fillMaxWidth()
-                    .height(215.dp),) {
+                Surface(
+                    shadowElevation = 7.dp, shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(215.dp),
+                ) {
                     AsyncImage(
                         model = "https://image.tmdb.org/t/p/w500/${item.posterPath}",
                         contentDescription = "Image: ${item.title}",
@@ -99,7 +110,11 @@ fun PopularMovieListCompose(
                         modifier = Modifier.size(18.dp),
                     )
                     Spacer(modifier = Modifier.width(2.dp))
-                    Text(text = rating(item.voteAverage), color = Color(0xff9C9C9C), fontSize = 13.sp)
+                    Text(
+                        text = rating(item.voteAverage),
+                        color = Color(0xff9C9C9C),
+                        fontSize = 13.sp
+                    )
                 }
             }
         }

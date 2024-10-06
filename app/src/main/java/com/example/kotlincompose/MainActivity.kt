@@ -6,7 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import com.bumble.appyx.core.integration.NodeHost
 import com.bumble.appyx.core.integrationpoint.NodeActivity
 import com.example.kotlincompose.ui.theme.KotlinComposeTheme
-import com.example.routes.RootNode
+import com.example.routes.node.RootNode
 
 class MainActivity : NodeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

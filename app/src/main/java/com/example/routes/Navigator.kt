@@ -10,6 +10,4 @@ interface Navigator {
     fun back()
 }
 
-val LocalBackStack = compositionLocalOf<BackStack<NavTarget>> {
-    error("No BackStack provided")
-}
+val LocalNavBackStack = staticCompositionLocalOf<BackStack<NavTarget>> { error("No BackStack provided") }

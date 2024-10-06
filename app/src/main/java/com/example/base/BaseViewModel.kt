@@ -8,18 +8,27 @@ import kotlinx.coroutines.flow.update
 
 abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : ViewModel() {
     
+    abstract fun handleIntent(appIntent: INTENT)
+    
     private val mutableStateModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
     val stateModel: StateFlow<MODEL> get() = mutableStateModel
     
-    private val mutableStateNowPlayingModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
+    private val mutableStateNowPlayingModel: MutableStateFlow<MODEL> =
+        MutableStateFlow(defaultModel)
     val stateNowPlayingModel: StateFlow<MODEL> get() = mutableStateNowPlayingModel
     
-    fun updateNowPLayingModel(block: (MODEL) -> MODEL) {
-        println("updateNowPLayingModel BaseViewModel called")
-        mutableStateNowPlayingModel.update(block)
+    // MOVIE DETAIL
+    private val mutableStateDetailMovieModel: MutableStateFlow<MODEL> =
+        MutableStateFlow(defaultModel)
+    val stateDetailMovieModel: StateFlow<MODEL> get() = mutableStateDetailMovieModel
+    
+    fun updateDetailMovieModel(block: (MODEL) -> MODEL) {
+        mutableStateDetailMovieModel.update(block)
     }
     
-    abstract fun handleIntent(appIntent: INTENT)
+    fun updateNowPLayingModel(block: (MODEL) -> MODEL) {
+        mutableStateNowPlayingModel.update(block)
+    }
     
     fun updateModel(block: (MODEL) -> MODEL) {
         mutableStateModel.update(block)

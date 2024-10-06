@@ -1,6 +1,5 @@
 package com.example.kotlincompose.main
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.HomeScreen
-import com.example.routes.LocalBackStack
-import com.example.routes.NavTarget
 
 @Composable
 fun MainScreen() {

@@ -51,7 +51,6 @@ fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel = viewModel
     val movieState by appViewModel.stateNowPlayingModel.collectAsState()
     
     LaunchedEffect(Unit) {
-        println("LaunchedEffect NowPlayingCompose")
         appViewModel.handleIntent(AppIntent.NowPlaying)
         println("movieState NowPlayingCompose: ${movieState.nowPlayingResponseState}")
     }

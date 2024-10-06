@@ -38,7 +38,6 @@ abstract class BaseRepository {
                        append("accept", "application/json")
                    }
                }
-           println("Response fetchHttpResponse: ${response.status} -- ${response.bodyAsText()}")
            return response
        }catch (e:Exception){
            println("error: ${e.message}")

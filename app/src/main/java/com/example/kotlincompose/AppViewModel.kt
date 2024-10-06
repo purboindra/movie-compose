@@ -3,6 +3,7 @@ package com.example.kotlincompose
 import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
 import com.example.base.State
+import com.example.entity.data.DetailMovie
 import com.example.entity.data.Movie
 import com.example.repository.MovieRepository
 import kotlinx.coroutines.flow.collectLatest
@@ -11,12 +12,14 @@ import kotlinx.coroutines.launch
 
 sealed class AppIntent {
     data object PopularMovie : AppIntent()
-    data object NowPlaying:AppIntent()
+    data object NowPlaying : AppIntent()
+    data class DetailMovie(val id: String) : AppIntent()
 }
 
 data class AppModel(
     val movieResponseState: State<Movie> = State.Idle,
-    val nowPlayingResponseState: State<Movie> = State.Idle
+    val nowPlayingResponseState: State<Movie> = State.Idle,
+    val detailMovieState: State<DetailMovie> = State.Idle,
 )
 
 class AppViewModel(
@@ -25,10 +28,15 @@ class AppViewModel(
     override fun handleIntent(appIntent: AppIntent) {
         when (appIntent) {
             is AppIntent.PopularMovie -> fetchPopularMovie()
-            is  AppIntent.NowPlaying -> fetchNowPlayingMovie()
+            is AppIntent.NowPlaying -> fetchNowPlayingMovie()
+            is AppIntent.DetailMovie -> fetchMovieById(id = appIntent.id)
         }
     }
     
+    private fun fetchMovieById(id: String) = viewModelScope.launch {
+        movieRepository.movieById(id = id).stateIn(this)
+            .collectLatest { state -> updateModel { it.copy(detailMovieState = state) } }
+    }
     
     private fun fetchPopularMovie() = viewModelScope.launch {
         movieRepository.popularMovie().stateIn(this).collectLatest { state ->
