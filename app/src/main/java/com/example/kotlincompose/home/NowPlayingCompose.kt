@@ -1,4 +1,4 @@
-package com.example.kotlincompose
+package com.example.kotlincompose.home
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,12 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +42,8 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.example.base.State
 import com.example.entity.data.Movie
+import com.example.kotlincompose.AppIntent
+import com.example.kotlincompose.AppViewModel
 
 @Composable
 fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel = viewModel()) {
@@ -53,7 +58,8 @@ fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel = viewModel
     
     Column(
         modifier = modifier
-            .fillMaxWidth().height(820.dp),
+            .fillMaxWidth()
+            .height(820.dp),
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -105,7 +111,11 @@ fun NowPlayingMovieList(
     
     LazyColumn {
         itemsIndexed(movies) { _, movie ->
-            Row(modifier = Modifier.height(156.dp).padding(vertical = 8.dp)) {
+            Row(
+                modifier = Modifier
+                    .height(156.dp)
+                    .padding(vertical = 8.dp)
+            ) {
                 
                 val imageLoader = ImageLoader.Builder(context)
                     .memoryCache {
@@ -135,6 +145,25 @@ fun NowPlayingMovieList(
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Text(text = movie.title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Rating",
+                            tint = Color(0xFFFFC319),
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = rating(movie.voteAverage),
+                            color = Color(0xff9C9C9C),
+                            fontSize = 13.sp
+                        )
+                    }
                 }
             }
         }

@@ -40,6 +40,9 @@ viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose",
 serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 appyx-core = { module = "com.bumble.appyx:core", version.ref = "appyx" }
+#appyx-navigation = { module = "com.bumble.appyx:appyx-navigation", version.ref = "appyx" }
+#appyx-interaction = { module = "com.bumble.appyx:appyx-interactions", version.ref = "appyx" }
+#appyx-backstack = { module = "com.bumble.appyx:backstack", version.ref = "appyx" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose-material" }
 
 

@@ -1,4 +1,4 @@
-package com.example.kotlincompose
+package com.example.kotlincompose.home
 
 import android.annotation.SuppressLint
 import android.content.Context

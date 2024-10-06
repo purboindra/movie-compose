@@ -5,12 +5,20 @@ import kotlinx.parcelize.Parcelize
 
 
 sealed class NavTarget : Parcelable {
+ 
     @Parcelize
-    object Child1 : NavTarget()
+    object Main : NavTarget()
     
-    @Parcelize
-    object Child2 : NavTarget()
-    
-    @Parcelize
-    object Child3 : NavTarget()
+//    @Parcelize
+//    object Home : NavTarget()
+//
+//
+//    @Parcelize
+//    object Cinemas : NavTarget()
+//
+//    @Parcelize
+//    object Ticket : NavTarget()
+//
+//    @Parcelize
+//    object Profile : NavTarget()
 }

@@ -74,6 +74,9 @@ dependencies {
 
     // APPYX/NAVIGATION
     implementation(libs.appyx.core)
+//    implementation(libs.appyx.navigation)
+//    implementation(libs.appyx.interaction)
+//    api(libs.appyx.backstack)
     
     // implementation(libs.serialization)
     
