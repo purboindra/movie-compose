@@ -51,7 +51,7 @@ import com.example.kotlincompose.AppViewModel
 import com.example.utils.imageLoader
 
 @Composable
-fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel = viewModel()) {
+fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel) {
     
     val movieState by appViewModel.stateNowPlayingModel.collectAsState()
     var hasLoaded by remember {

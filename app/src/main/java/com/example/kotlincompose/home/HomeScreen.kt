@@ -35,15 +35,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kotlincompose.AppViewModel
 
 @Composable
 fun HomeScreen() {
     
-    val categories = listOf("All Movie", "Action", "Romance", "Comedy")
-    
-    var categoryIndex by remember {
-        mutableIntStateOf(0)
-    }
+    val appViewModel = AppViewModel()
     
     LazyColumn(
         modifier = Modifier
@@ -79,45 +76,13 @@ fun HomeScreen() {
                     )
                 )
                 Spacer(modifier = Modifier.height(15.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(35.dp),
-                ) {
-                    LazyRow(modifier = Modifier.fillMaxHeight()) {
-                        itemsIndexed(categories) { index, item ->
-                            Surface(
-                                modifier = Modifier
-                                    .width(100.dp)
-                                    .fillMaxHeight()
-                                    .padding(horizontal = 6.dp)
-                                    .clickable {
-                                        categoryIndex = index
-                                    },
-                                shape = RoundedCornerShape(8.dp),
-                                border = BorderStroke(1.dp, Color(0xff334BFB)),
-                                color = if (categoryIndex == index) Color(0xff334BFB) else Color.Transparent,
-                                content = {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = item,
-                                            color = if (categoryIndex == index) Color.White else Color.Black,
-                                            fontWeight = FontWeight.Medium,
-                                        )
-                                    }
-                                })
-                        }
-                    }
-                }
+                CategoryCompose(appViewModel)
                 Spacer(modifier = Modifier.height(15.dp))
                 
-                PopularMovieCompose(Modifier.padding(2.dp))
+                PopularMovieCompose(Modifier.padding(2.dp), appViewModel)
                 
                 Spacer(modifier = Modifier.height(15.dp))
-                NowPlayingCompose(Modifier.padding(2.dp))
+                NowPlayingCompose(Modifier.padding(2.dp), appViewModel)
             }
         }
     }

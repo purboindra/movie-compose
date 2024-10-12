@@ -22,6 +22,15 @@ abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : V
         MutableStateFlow(defaultModel)
     val stateDetailMovieModel: StateFlow<MODEL> get() = mutableStateDetailMovieModel
     
+    // CATEGORY
+    private val mutableStateCategoryModel: MutableStateFlow<MODEL> =
+        MutableStateFlow(defaultModel)
+    val stateCategoryModel: StateFlow<MODEL> get() = mutableStateCategoryModel
+    
+    fun updateCategoryModel(block: (MODEL) -> MODEL) {
+        mutableStateCategoryModel.update(block)
+    }
+    
     fun updateDetailMovieModel(block: (MODEL) -> MODEL) {
         mutableStateDetailMovieModel.update(block)
     }

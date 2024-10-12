@@ -30,7 +30,7 @@ import com.example.routes.LocalNavBackStack
 
 
 @Composable
-fun PopularMovieCompose(modifier: Modifier = Modifier, appViewModel: AppViewModel = viewModel()) {
+fun PopularMovieCompose(modifier: Modifier = Modifier, appViewModel: AppViewModel) {
     
     val movieState by appViewModel.stateModel.collectAsState()
     var hasLoaded by remember { mutableStateOf(false) }

@@ -2,6 +2,7 @@ package com.example.repository
 
 import com.example.base.BaseRepository
 import com.example.base.State
+import com.example.entity.data.Category
 import com.example.entity.data.DetailMovie
 import com.example.entity.data.Movie
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,14 @@ class MovieRepository : BaseRepository() {
         return suspend {
             fetchHttpResponse("https://api.themoviedb.org/3/movie/${id}?language=en-US")
         }.reduce<DetailMovie, DetailMovie> { response ->
+            State.Success(response)
+        }
+    }
+    
+    fun categories(): Flow<State<Category>> {
+        return suspend {
+            fetchHttpResponse("https://api.themoviedb.org/3/genre/movie/list?language=en")
+        }.reduce<Category, Category> { response ->
             State.Success(response)
         }
     }

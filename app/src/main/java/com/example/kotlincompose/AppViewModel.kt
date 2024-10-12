@@ -3,6 +3,7 @@ package com.example.kotlincompose
 import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
 import com.example.base.State
+import com.example.entity.data.Category
 import com.example.entity.data.DetailMovie
 import com.example.entity.data.Movie
 import com.example.repository.MovieRepository
@@ -14,12 +15,14 @@ sealed class AppIntent {
     data object PopularMovie : AppIntent()
     data object NowPlaying : AppIntent()
     data class DetailMovie(val id: String) : AppIntent()
+    data object Categories : AppIntent()
 }
 
 data class AppModel(
     val movieResponseState: State<Movie> = State.Idle,
     val nowPlayingResponseState: State<Movie> = State.Idle,
     val detailMovieState: State<DetailMovie> = State.Idle,
+    val categoryResponseState: State<Category> = State.Idle,
 )
 
 class AppViewModel(
@@ -28,6 +31,7 @@ class AppViewModel(
     
     private var hasLoadedPopularMovies = false
     private var hasLoadedNowPlayingMovies = false
+    private var hasLoadedCategories = false
     
     
     override fun handleIntent(appIntent: AppIntent) {
@@ -47,7 +51,25 @@ class AppViewModel(
             }
             
             is AppIntent.DetailMovie -> fetchMovieById(id = appIntent.id)
+            
+            is AppIntent.Categories -> {
+                println("Debug fetchCategoris AppView Model: ${hasLoadedCategories}")
+                if (!hasLoadedCategories) {
+                    hasLoadedCategories = true
+                    fetchCategories()
+                }
+            }
         }
+    }
+    
+    private fun fetchCategories() = viewModelScope.launch {
+        movieRepository.categories().stateIn(this)
+            .collectLatest { state ->
+                println("Debug fetchCategoris viewModelScope: ${state}")
+                updateCategoryModel {
+                    it.copy(categoryResponseState = state)
+                }
+            }
     }
     
     private fun fetchMovieById(id: String) = viewModelScope.launch {
