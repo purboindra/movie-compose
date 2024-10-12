@@ -95,4 +95,7 @@ dependencies {
     
     // COMPOSE MATERIAL
     implementation(libs.compose.material)
+    
+    // COMPOSE SHIMMER
+    implementation(libs.compose.shimmer)
 }
