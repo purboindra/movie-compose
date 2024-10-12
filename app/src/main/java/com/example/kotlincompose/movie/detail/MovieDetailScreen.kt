@@ -1,14 +1,11 @@
 package com.example.kotlincompose.movie.detail
-
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -50,23 +47,23 @@ import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.example.base.State
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.rating
-import com.example.kotlincompose.home.viewmodel.HomeIntent
-import com.example.kotlincompose.home.viewmodel.HomeViewModel
+import com.example.kotlincompose.movie.detail.viewmodel.MovieDetailIntent
+import com.example.kotlincompose.movie.detail.viewmodel.MovieDetailViewModel
 import com.example.routes.LocalNavBackStack
 import com.example.utils.formatReleaseDate
 import com.example.utils.imageLoader
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun MovieDetailScreen(id: String, modifier: Modifier, homeViewModel: HomeViewModel = viewModel()) {
+fun MovieDetailScreen(id: String, modifier: Modifier,movieDetailViewModel: MovieDetailViewModel = viewModel()) {
     
-    val movieState by homeViewModel.stateDetailMovieModel.collectAsState()
+    val movieState by movieDetailViewModel.stateDetailMovieModel.collectAsState()
     val backStack = LocalNavBackStack.current
     
     val context = LocalContext.current
     
     LaunchedEffect(Unit) {
-        homeViewModel.handleIntent(HomeIntent.DetailMovie(id))
+        movieDetailViewModel.handleIntent(MovieDetailIntent.MovieDetail(id))
     }
     
     Scaffold ( modifier = Modifier.statusBarsPadding(), topBar = {
@@ -90,7 +87,7 @@ fun MovieDetailScreen(id: String, modifier: Modifier, homeViewModel: HomeViewMod
             modifier = Modifier.statusBarsPadding()
         )
     }) { innerPadding ->
-        when (val state = movieState.detailMovieState) {
+        when (val state = movieState.movieDetailState) {
             is State.Idle -> {
                 Box(
                     modifier = Modifier

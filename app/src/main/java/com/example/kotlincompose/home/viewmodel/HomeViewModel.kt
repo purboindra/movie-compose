@@ -14,14 +14,12 @@ import kotlinx.coroutines.launch
 sealed class HomeIntent {
     data object PopularMovie : HomeIntent()
     data object NowPlaying : HomeIntent()
-    data class DetailMovie(val id: String) : HomeIntent()
     data object Categories : HomeIntent()
 }
 
 data class HomeModel(
     val movieResponseState: State<Movie> = State.Idle,
     val nowPlayingResponseState: State<Movie> = State.Idle,
-    val detailMovieState: State<DetailMovie> = State.Idle,
     val categoryResponseState: State<Category> = State.Idle,
 )
 
@@ -50,8 +48,6 @@ class HomeViewModel(
                 }
             }
             
-            is HomeIntent.DetailMovie -> fetchMovieById(id = appIntent.id)
-            
             is HomeIntent.Categories -> {
                 println("Debug fetchCategoris AppView Model: ${hasLoadedCategories}")
                 if (!hasLoadedCategories) {
@@ -67,15 +63,6 @@ class HomeViewModel(
             .collectLatest { state ->
                 updateCategoryModel {
                     it.copy(categoryResponseState = state)
-                }
-            }
-    }
-    
-    private fun fetchMovieById(id: String) = viewModelScope.launch {
-        movieRepository.movieById(id = id).stateIn(this)
-            .collectLatest { state ->
-                updateDetailMovieModel {
-                    it.copy(detailMovieState = state)
                 }
             }
     }

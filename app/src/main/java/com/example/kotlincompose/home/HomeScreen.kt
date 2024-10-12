@@ -21,12 +21,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlincompose.home.viewmodel.HomeViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
     
-    val homeViewModel = HomeViewModel()
     
     LazyColumn(
         modifier = Modifier
