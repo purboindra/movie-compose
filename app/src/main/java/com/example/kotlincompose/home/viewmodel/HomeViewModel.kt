@@ -1,4 +1,4 @@
-package com.example.kotlincompose
+package com.example.kotlincompose.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
@@ -11,48 +11,48 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-sealed class AppIntent {
-    data object PopularMovie : AppIntent()
-    data object NowPlaying : AppIntent()
-    data class DetailMovie(val id: String) : AppIntent()
-    data object Categories : AppIntent()
+sealed class HomeIntent {
+    data object PopularMovie : HomeIntent()
+    data object NowPlaying : HomeIntent()
+    data class DetailMovie(val id: String) : HomeIntent()
+    data object Categories : HomeIntent()
 }
 
-data class AppModel(
+data class HomeModel(
     val movieResponseState: State<Movie> = State.Idle,
     val nowPlayingResponseState: State<Movie> = State.Idle,
     val detailMovieState: State<DetailMovie> = State.Idle,
     val categoryResponseState: State<Category> = State.Idle,
 )
 
-class AppViewModel(
+class HomeViewModel(
     private val movieRepository: MovieRepository = MovieRepository()
-) : BaseViewModel<AppModel, AppIntent>(AppModel()) {
+) : BaseViewModel<HomeModel, HomeIntent>(HomeModel()) {
     
     private var hasLoadedPopularMovies = false
     private var hasLoadedNowPlayingMovies = false
     private var hasLoadedCategories = false
     
     
-    override fun handleIntent(appIntent: AppIntent) {
+    override fun handleIntent(appIntent: HomeIntent) {
         when (appIntent) {
-            is AppIntent.PopularMovie -> {
+            is HomeIntent.PopularMovie -> {
                 if (!hasLoadedPopularMovies) {
                     hasLoadedPopularMovies = true
                     fetchPopularMovie()
                 }
             }
             
-            is AppIntent.NowPlaying -> {
+            is HomeIntent.NowPlaying -> {
                 if (!hasLoadedNowPlayingMovies) {
                     hasLoadedNowPlayingMovies = true
                     fetchNowPlayingMovie()
                 }
             }
             
-            is AppIntent.DetailMovie -> fetchMovieById(id = appIntent.id)
+            is HomeIntent.DetailMovie -> fetchMovieById(id = appIntent.id)
             
-            is AppIntent.Categories -> {
+            is HomeIntent.Categories -> {
                 println("Debug fetchCategoris AppView Model: ${hasLoadedCategories}")
                 if (!hasLoadedCategories) {
                     hasLoadedCategories = true
@@ -65,7 +65,6 @@ class AppViewModel(
     private fun fetchCategories() = viewModelScope.launch {
         movieRepository.categories().stateIn(this)
             .collectLatest { state ->
-                println("Debug fetchCategoris viewModelScope: ${state}")
                 updateCategoryModel {
                     it.copy(categoryResponseState = state)
                 }
@@ -90,7 +89,6 @@ class AppViewModel(
     }
     
     private fun fetchNowPlayingMovie() = viewModelScope.launch {
-        println("fetchNowPlayingMovie AppViewModel called")
         movieRepository.nowPlayingMovie().stateIn(this).collectLatest { state ->
             updateNowPLayingModel {
                 it.copy(nowPlayingResponseState = state)

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,14 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.base.State
-import com.example.kotlincompose.AppIntent
-import com.example.kotlincompose.AppViewModel
+import com.example.kotlincompose.home.viewmodel.HomeIntent
+import com.example.kotlincompose.home.viewmodel.HomeViewModel
 import com.example.kotlincompose.loading.LoadingShimmer
 
 @Composable
-fun CategoryCompose(appViewModel: AppViewModel) {
+fun CategoryCompose(homeViewModel: HomeViewModel) {
     
-    val categoryState by appViewModel.stateCategoryModel.collectAsState()
+    val categoryState by homeViewModel.stateCategoryModel.collectAsState()
     
     var hasLoaded by remember {
         mutableStateOf(false)
@@ -47,7 +46,7 @@ fun CategoryCompose(appViewModel: AppViewModel) {
     
     LaunchedEffect(Unit) {
         if (!hasLoaded) {
-            appViewModel.handleIntent(AppIntent.Categories)
+            homeViewModel.handleIntent(HomeIntent.Categories)
             hasLoaded = true
             println("Debug fetchCategoris Compose: ${categoryState.categoryResponseState}")
         }
@@ -84,7 +83,9 @@ fun CategoryCompose(appViewModel: AppViewModel) {
                             color = if (categoryIndex == index) Color(0xff334BFB) else Color.Transparent,
                             content = {
                                 Box(
-                                    modifier = Modifier.fillMaxSize().padding(horizontal=8.dp),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 8.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(

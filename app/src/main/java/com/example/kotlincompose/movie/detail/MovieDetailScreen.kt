@@ -4,8 +4,6 @@ package com.example.kotlincompose.movie.detail
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import android.content.Context
-import android.content.res.Resources.Theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -18,11 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Chip
-import androidx.compose.material.Colors
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -31,11 +26,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,25 +48,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.example.base.State
-import com.example.kotlincompose.AppIntent
-import com.example.kotlincompose.AppViewModel
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.rating
+import com.example.kotlincompose.home.viewmodel.HomeIntent
+import com.example.kotlincompose.home.viewmodel.HomeViewModel
 import com.example.routes.LocalNavBackStack
 import com.example.utils.formatReleaseDate
 import com.example.utils.imageLoader
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun MovieDetailScreen(id: String, modifier: Modifier, appViewModel: AppViewModel = viewModel()) {
+fun MovieDetailScreen(id: String, modifier: Modifier, homeViewModel: HomeViewModel = viewModel()) {
     
-    val movieState by appViewModel.stateDetailMovieModel.collectAsState()
+    val movieState by homeViewModel.stateDetailMovieModel.collectAsState()
     val backStack = LocalNavBackStack.current
     
     val context = LocalContext.current
     
     LaunchedEffect(Unit) {
-        appViewModel.handleIntent(AppIntent.DetailMovie(id))
+        homeViewModel.handleIntent(HomeIntent.DetailMovie(id))
     }
     
     Scaffold ( modifier = Modifier.statusBarsPadding(), topBar = {

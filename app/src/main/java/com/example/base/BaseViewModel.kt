@@ -1,7 +1,6 @@
 package com.example.base
 
 import androidx.lifecycle.ViewModel
-import com.example.kotlincompose.AppIntent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update

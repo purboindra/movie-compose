@@ -22,22 +22,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.base.State
-import com.example.kotlincompose.AppIntent
-import com.example.kotlincompose.AppViewModel
-import com.example.routes.LocalNavBackStack
+import com.example.kotlincompose.home.viewmodel.HomeIntent
+import com.example.kotlincompose.home.viewmodel.HomeViewModel
 
 
 @Composable
-fun PopularMovieCompose(modifier: Modifier = Modifier, appViewModel: AppViewModel) {
+fun PopularMovieCompose(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
     
-    val movieState by appViewModel.stateModel.collectAsState()
+    val movieState by homeViewModel.stateModel.collectAsState()
     var hasLoaded by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
         if (!hasLoaded) {
-            appViewModel.handleIntent(AppIntent.PopularMovie)
+            homeViewModel.handleIntent(HomeIntent.PopularMovie)
             hasLoaded = true
         }
     }
