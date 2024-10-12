@@ -25,17 +25,38 @@ data class AppModel(
 class AppViewModel(
     private val movieRepository: MovieRepository = MovieRepository()
 ) : BaseViewModel<AppModel, AppIntent>(AppModel()) {
+    
+    private var hasLoadedPopularMovies = false
+    private var hasLoadedNowPlayingMovies = false
+    
+    
     override fun handleIntent(appIntent: AppIntent) {
         when (appIntent) {
-            is AppIntent.PopularMovie -> fetchPopularMovie()
-            is AppIntent.NowPlaying -> fetchNowPlayingMovie()
+            is AppIntent.PopularMovie -> {
+                if (!hasLoadedPopularMovies) {
+                    hasLoadedPopularMovies = true
+                    fetchPopularMovie()
+                }
+            }
+            
+            is AppIntent.NowPlaying -> {
+                if (!hasLoadedNowPlayingMovies) {
+                    hasLoadedNowPlayingMovies = true
+                    fetchNowPlayingMovie()
+                }
+            }
+            
             is AppIntent.DetailMovie -> fetchMovieById(id = appIntent.id)
         }
     }
     
     private fun fetchMovieById(id: String) = viewModelScope.launch {
         movieRepository.movieById(id = id).stateIn(this)
-            .collectLatest { state -> updateModel { it.copy(detailMovieState = state) } }
+            .collectLatest { state ->
+                updateDetailMovieModel {
+                    it.copy(detailMovieState = state)
+                }
+            }
     }
     
     private fun fetchPopularMovie() = viewModelScope.launch {

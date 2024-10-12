@@ -70,7 +70,7 @@ data class DetailMovie(
         @SerialName("poster_path")
         val posterPath: String
     )
-
+    
     @Serializable
     data class Genre(
         @SerialName("id")
@@ -78,19 +78,19 @@ data class DetailMovie(
         @SerialName("name")
         val name: String
     )
-
+    
     @Serializable
     data class ProductionCompany(
         @SerialName("id")
         val id: Int,
         @SerialName("logo_path")
-        val logoPath: String,
+        val logoPath: String? = null,
         @SerialName("name")
         val name: String,
         @SerialName("origin_country")
         val originCountry: String
     )
-
+    
     @Serializable
     data class ProductionCountry(
         @SerialName("iso_3166_1")
@@ -98,7 +98,7 @@ data class DetailMovie(
         @SerialName("name")
         val name: String
     )
-
+    
     @Serializable
     data class SpokenLanguage(
         @SerialName("english_name")

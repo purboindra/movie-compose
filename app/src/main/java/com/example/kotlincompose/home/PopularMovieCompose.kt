@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,9 +33,13 @@ import com.example.routes.LocalNavBackStack
 fun PopularMovieCompose(modifier: Modifier = Modifier, appViewModel: AppViewModel = viewModel()) {
     
     val movieState by appViewModel.stateModel.collectAsState()
+    var hasLoaded by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
-        appViewModel.handleIntent(AppIntent.PopularMovie)
+        if (!hasLoaded) {
+            appViewModel.handleIntent(AppIntent.PopularMovie)
+            hasLoaded = true
+        }
     }
     
     Column {

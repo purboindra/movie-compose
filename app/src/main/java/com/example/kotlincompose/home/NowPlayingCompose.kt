@@ -27,6 +27,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,15 +48,21 @@ import com.example.base.State
 import com.example.entity.data.Movie
 import com.example.kotlincompose.AppIntent
 import com.example.kotlincompose.AppViewModel
+import com.example.utils.imageLoader
 
 @Composable
 fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel = viewModel()) {
     
     val movieState by appViewModel.stateNowPlayingModel.collectAsState()
+    var hasLoaded by remember {
+        mutableStateOf(false)
+    }
     
     LaunchedEffect(Unit) {
-        appViewModel.handleIntent(AppIntent.NowPlaying)
-        println("movieState NowPlayingCompose: ${movieState.nowPlayingResponseState}")
+        if (!hasLoaded) {
+            appViewModel.handleIntent(AppIntent.NowPlaying)
+            hasLoaded = true
+        }
     }
     
     Column(
@@ -99,73 +109,4 @@ fun NowPlayingCompose(modifier: Modifier, appViewModel: AppViewModel = viewModel
             }
         }
     }
-}
-
-@Composable
-fun NowPlayingMovieList(
-    context: Context = LocalContext.current,
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
-    movies: List<Movie.Result>
-) {
-    
-    LazyColumn {
-        itemsIndexed(movies) { _, movie ->
-            Row(
-                modifier = Modifier
-                    .height(156.dp)
-                    .padding(vertical = 8.dp)
-            ) {
-                
-                val imageLoader = ImageLoader.Builder(context)
-                    .memoryCache {
-                        MemoryCache.Builder(context)
-                            .maxSizePercent(0.25)
-                            .build()
-                    }
-                    .diskCache {
-                        DiskCache.Builder()
-                            .directory(context.cacheDir.resolve("image_cache"))
-                            .maxSizePercent(0.02)
-                            .build()
-                    }
-                    .build()
-                
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    shadowElevation = 8.dp,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(100.dp)
-                ) {
-                    AsyncImage(
-                        model = "https://image.tmdb.org/t/p/w500/${movie.posterPath}",
-                        contentDescription = movie.title,
-                        imageLoader = imageLoader,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Text(text = movie.title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Rating",
-                            tint = Color(0xFFFFC319),
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(
-                            text = rating(movie.voteAverage),
-                            color = Color(0xff9C9C9C),
-                            fontSize = 13.sp
-                        )
-                    }
-                }
-            }
-        }
-    }
-    
 }
