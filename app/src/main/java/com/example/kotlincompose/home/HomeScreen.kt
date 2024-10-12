@@ -44,6 +44,7 @@ fun HomeScreen() {
     var categoryIndex by remember {
         mutableIntStateOf(0)
     }
+    
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

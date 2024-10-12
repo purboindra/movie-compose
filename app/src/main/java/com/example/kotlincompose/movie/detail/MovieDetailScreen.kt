@@ -8,14 +8,22 @@ import android.content.Context
 import android.content.res.Resources.Theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Chip
 import androidx.compose.material.Colors
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -25,6 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +63,7 @@ import com.example.routes.LocalNavBackStack
 import com.example.utils.formatReleaseDate
 import com.example.utils.imageLoader
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun MovieDetailScreen(id: String, modifier: Modifier, appViewModel: AppViewModel = viewModel()) {
     
@@ -66,7 +76,7 @@ fun MovieDetailScreen(id: String, modifier: Modifier, appViewModel: AppViewModel
         appViewModel.handleIntent(AppIntent.DetailMovie(id))
     }
     
-    Scaffold(topBar = {
+    Scaffold ( modifier = Modifier.statusBarsPadding(), topBar = {
         TopAppBar(
             title = {
                 Text(
@@ -109,7 +119,7 @@ fun MovieDetailScreen(id: String, modifier: Modifier, appViewModel: AppViewModel
                         .padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = error.message ?: "Something went wrong")
+                    Text(text = "${error.message} -- ${id}" ?: "Something went wrong")
                 }
             }
             
@@ -200,11 +210,34 @@ fun MovieDetailScreen(id: String, modifier: Modifier, appViewModel: AppViewModel
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xff858585)
                                 )
-                                Box(modifier = Modifier.height(12.dp))
+                                Box(modifier = Modifier.height(5.dp))
                                 Text(
                                     text = formatReleaseDate(movie.releaseDate),
                                     color = Color(0xff858585)
                                 )
+                            }
+                            
+                            Box(modifier = Modifier.width(28.dp))
+                            
+                            Column {
+                                Text(
+                                    text = "Genres",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xff858585)
+                                )
+                                Box(modifier = Modifier.height(5.dp))
+                                FlowRow() {
+                                    movie.genres.forEach { genre ->
+                                        Chip(
+                                            onClick = { },
+                                            modifier = Modifier.padding(horizontal = 3.dp),
+                                            enabled = false
+                                        ) {
+                                            Text(text = genre.name)
+                                        }
+                                    }
+                                }
                             }
                         }
                         
@@ -216,7 +249,27 @@ fun MovieDetailScreen(id: String, modifier: Modifier, appViewModel: AppViewModel
                                 .height(1.dp)
                                 .background(color = Color(0xff858585))
                         )
+                        Box(modifier = Modifier.height(15.dp))
                         
+                        Text(
+                            text = "Synopsis",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xff858585)
+                        )
+                        Box(modifier = Modifier.height(5.dp))
+                        
+                        Text(
+                            text = movie.overview,
+                        )
+                        Box(modifier = Modifier.height(15.dp))
+                        Button(
+                            onClick = { },
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = modifier.fillMaxWidth(),
+                        ) {
+                            Text("Buy Ticket", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        }
                         
                     }
                 }
