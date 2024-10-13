@@ -8,18 +8,29 @@ import com.example.entity.data.Movie
 import kotlinx.coroutines.flow.Flow
 
 class MovieRepository : BaseRepository() {
-    fun popularMovie(): Flow<State<Movie>> {
+    fun popularMovie(genres: String? = null): Flow<State<Movie>> {
         return suspend {
-            fetchHttpResponse("https://api.themoviedb.org/3/movie/popular?language=en-US&page=1")
+            
+            var url =
+                "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&include_video=false&language=en-US&page=1"
+            
+            genres?.let {
+                url += "&with_genres=${genres}"
+            }
+            
+            fetchHttpResponse(url)
         }.reduce<Movie, Movie> { response ->
             State.Success(response)
         }
     }
     
     fun nowPlayingMovie(): Flow<State<Movie>> {
-        println("nowPlayingMovie MovieRepository called")
         return suspend {
-            fetchHttpResponse("https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1")
+            
+            val url =
+                "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&include_video=false&language=en-US&page=1"
+            
+            fetchHttpResponse(url)
         }.reduce<Movie, Movie> { response -> State.Success(response) }
     }
     

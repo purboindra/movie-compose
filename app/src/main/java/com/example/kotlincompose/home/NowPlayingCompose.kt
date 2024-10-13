@@ -36,7 +36,7 @@ fun NowPlayingCompose(modifier: Modifier,homeViewModel: HomeViewModel) {
     
     LaunchedEffect(Unit) {
         if (!hasLoaded) {
-            homeViewModel.handleIntent(HomeIntent.NowPlaying)
+            homeViewModel.handleIntent(HomeIntent.NowPlaying())
             hasLoaded = true
         }
     }

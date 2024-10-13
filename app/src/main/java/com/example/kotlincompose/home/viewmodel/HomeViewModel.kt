@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
 import com.example.base.State
 import com.example.entity.data.Category
-import com.example.entity.data.DetailMovie
 import com.example.entity.data.Movie
 import com.example.repository.MovieRepository
 import kotlinx.coroutines.flow.collectLatest
@@ -12,8 +11,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 sealed class HomeIntent {
-    data object PopularMovie : HomeIntent()
-    data object NowPlaying : HomeIntent()
+    data class PopularMovie(val genres: String? = null) : HomeIntent()
+    data class NowPlaying(val genres: String? = null) : HomeIntent()
     data object Categories : HomeIntent()
 }
 
@@ -31,13 +30,22 @@ class HomeViewModel(
     private var hasLoadedNowPlayingMovies = false
     private var hasLoadedCategories = false
     
+    private var _categoryId: String? = null
+    
+    fun onTapCategory(id: String) {
+        if (id != _categoryId) {
+            _categoryId = id
+            fetchPopularMovie(id)
+        }
+    }
     
     override fun handleIntent(appIntent: HomeIntent) {
+        
         when (appIntent) {
             is HomeIntent.PopularMovie -> {
                 if (!hasLoadedPopularMovies) {
                     hasLoadedPopularMovies = true
-                    fetchPopularMovie()
+                    fetchPopularMovie(appIntent.genres)
                 }
             }
             
@@ -49,7 +57,6 @@ class HomeViewModel(
             }
             
             is HomeIntent.Categories -> {
-                println("Debug fetchCategoris AppView Model: ${hasLoadedCategories}")
                 if (!hasLoadedCategories) {
                     hasLoadedCategories = true
                     fetchCategories()
@@ -67,8 +74,8 @@ class HomeViewModel(
             }
     }
     
-    private fun fetchPopularMovie() = viewModelScope.launch {
-        movieRepository.popularMovie().stateIn(this).collectLatest { state ->
+    private fun fetchPopularMovie(genres: String? = null) = viewModelScope.launch {
+        movieRepository.popularMovie(genres).stateIn(this).collectLatest { state ->
             updateModel {
                 it.copy(movieResponseState = state)
             }

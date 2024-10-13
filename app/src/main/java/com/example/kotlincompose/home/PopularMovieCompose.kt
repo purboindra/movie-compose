@@ -34,12 +34,10 @@ fun PopularMovieCompose(modifier: Modifier = Modifier, homeViewModel: HomeViewMo
     var hasLoaded by remember { mutableStateOf(false) }
     
     LaunchedEffect(Unit) {
-        println("hasLoaded PopularMovieCompose first: ${hasLoaded}")
         if (!hasLoaded) {
-            homeViewModel.handleIntent(HomeIntent.PopularMovie)
+            homeViewModel.handleIntent(HomeIntent.PopularMovie())
             hasLoaded = true
         }
-        println("hasLoaded PopularMovieCompose secod: ${hasLoaded}")
     }
     
     Column {

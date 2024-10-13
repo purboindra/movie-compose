@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.asFlow
 import com.example.base.State
 import com.example.kotlincompose.home.viewmodel.HomeIntent
 import com.example.kotlincompose.home.viewmodel.HomeViewModel
 import com.example.kotlincompose.loading.LoadingShimmer
+
 
 @Composable
 fun CategoryCompose(homeViewModel: HomeViewModel) {
@@ -41,14 +43,13 @@ fun CategoryCompose(homeViewModel: HomeViewModel) {
     }
     
     var categoryIndex by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(-1)
     }
     
     LaunchedEffect(Unit) {
         if (!hasLoaded) {
             homeViewModel.handleIntent(HomeIntent.Categories)
             hasLoaded = true
-            println("Debug fetchCategoris Compose: ${categoryState.categoryResponseState}")
         }
     }
     
@@ -77,6 +78,9 @@ fun CategoryCompose(homeViewModel: HomeViewModel) {
                                 .padding(horizontal = 6.dp)
                                 .clickable {
                                     categoryIndex = index
+                                    homeViewModel.onTapCategory(item.id.toString())
+                                    homeViewModel.handleIntent(HomeIntent.PopularMovie(item.id.toString()))
+                                    homeViewModel.handleIntent(HomeIntent.NowPlaying(item.id.toString()))
                                 },
                             shape = RoundedCornerShape(8.dp),
                             border = BorderStroke(1.dp, Color(0xff334BFB)),
