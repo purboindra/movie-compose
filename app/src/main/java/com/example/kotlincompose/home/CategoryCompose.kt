@@ -38,13 +38,9 @@ fun CategoryCompose(homeViewModel: HomeViewModel) {
     
     val categoryState by homeViewModel.stateCategoryModel.collectAsState()
     
-    var hasLoaded by remember {
-        mutableStateOf(false)
-    }
+    val categoryIndex by homeViewModel.categoryIndex.collectAsState()
     
-    var categoryIndex by remember {
-        mutableIntStateOf(-1)
-    }
+    var hasLoaded = false
     
     LaunchedEffect(Unit) {
         if (!hasLoaded) {
@@ -77,28 +73,30 @@ fun CategoryCompose(homeViewModel: HomeViewModel) {
                                 .fillMaxHeight()
                                 .padding(horizontal = 6.dp)
                                 .clickable {
-                                    categoryIndex = index
                                     homeViewModel.onTapCategory(item.id.toString())
-                                    homeViewModel.handleIntent(HomeIntent.PopularMovie(item.id.toString()))
-                                    homeViewModel.handleIntent(HomeIntent.NowPlaying(item.id.toString()))
+                                    homeViewModel.onTapCategoryIndex(index)
                                 },
                             shape = RoundedCornerShape(8.dp),
                             border = BorderStroke(1.dp, Color(0xff334BFB)),
-                            color = if (categoryIndex == index) Color(0xff334BFB) else Color.Transparent,
-                            content = {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(horizontal = 8.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = item.name,
-                                        color = if (categoryIndex == index) Color.White else Color.Black,
-                                        fontWeight = FontWeight.Medium,
-                                    )
-                                }
-                            })
+                            color = if (categoryIndex == index) {
+                                Color(0xff334BFB)
+                            } else {
+                                Color.Transparent
+                            }
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = item.name,
+                                    color = if (categoryIndex == index) Color.White else Color.Black,
+                                    fontWeight = FontWeight.Medium,
+                                )
+                            }
+                        }
                     }
                 }
             }

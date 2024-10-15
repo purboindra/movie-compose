@@ -57,6 +57,14 @@ fun PopularMovieCompose(modifier: Modifier = Modifier, homeViewModel: HomeViewMo
         Spacer(modifier = Modifier.height(18.dp))
         when (val state = movieState.movieResponseState) {
             is State.Idle -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
             
             is State.Loading -> {
@@ -72,7 +80,19 @@ fun PopularMovieCompose(modifier: Modifier = Modifier, homeViewModel: HomeViewMo
             
             is State.Success -> {
                 val movie = state.data
-                PopularMovieListCompose(movies = movie.results)
+                
+                if(movie.results.isEmpty()){
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                       Text(text = "Movie not found!")
+                    }
+                }else{
+                    PopularMovieListCompose(movies = movie.results)
+                }
             }
             
             is State.Failure -> {

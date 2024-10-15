@@ -1,13 +1,18 @@
 package com.example.kotlincompose.home.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
 import com.example.base.State
 import com.example.entity.data.Category
 import com.example.entity.data.Movie
 import com.example.repository.MovieRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed class HomeIntent {
@@ -30,13 +35,21 @@ class HomeViewModel(
     private var hasLoadedNowPlayingMovies = false
     private var hasLoadedCategories = false
     
-    private var _categoryId: String? = null
+    private var _categoryId: MutableStateFlow<String?> = MutableStateFlow(null)
+    
+    private var _categoryIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val categoryIndex: StateFlow<Int?> = _categoryIndex.asStateFlow()
+    
     
     fun onTapCategory(id: String) {
-        if (id != _categoryId) {
-            _categoryId = id
+        if (id != _categoryId.value) {
+            _categoryId.update { id }
             fetchPopularMovie(id)
         }
+    }
+    
+    fun onTapCategoryIndex(index: Int) {
+        _categoryIndex.update { index }
     }
     
     override fun handleIntent(appIntent: HomeIntent) {
@@ -76,7 +89,7 @@ class HomeViewModel(
     
     private fun fetchPopularMovie(genres: String? = null) = viewModelScope.launch {
         movieRepository.popularMovie(genres).stateIn(this).collectLatest { state ->
-            updateModel {
+           updateModel {
                 it.copy(movieResponseState = state)
             }
         }

@@ -27,7 +27,6 @@ import com.example.kotlincompose.home.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
     
-    
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -62,6 +61,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
                     )
                 )
                 Spacer(modifier = Modifier.height(15.dp))
+                // PASS VIEW MODEL AS PARAMATER
                 CategoryCompose(homeViewModel)
                 Spacer(modifier = Modifier.height(15.dp))
                 
@@ -72,5 +72,4 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
             }
         }
     }
-    
 }
