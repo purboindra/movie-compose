@@ -1,6 +1,5 @@
 package com.example.kotlincompose.home.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
 import com.example.base.State

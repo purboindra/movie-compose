@@ -26,6 +26,15 @@ abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : V
         MutableStateFlow(defaultModel)
     val stateCategoryModel: StateFlow<MODEL> get() = mutableStateCategoryModel
     
+    // SEARCH
+    private val mutableStateSearchMovieModel: MutableStateFlow<MODEL> =
+        MutableStateFlow(defaultModel)
+    val stateSearchMovieModel: StateFlow<MODEL> get() = mutableStateSearchMovieModel
+    
+    fun updateSearchMovieModel(block: (MODEL) -> MODEL) {
+        mutableStateSearchMovieModel.update(block)
+    }
+    
     fun updateCategoryModel(block: (MODEL) -> MODEL) {
         mutableStateCategoryModel.update(block)
     }

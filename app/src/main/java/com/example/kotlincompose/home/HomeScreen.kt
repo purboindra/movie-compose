@@ -1,6 +1,9 @@
 package com.example.kotlincompose.home
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -22,10 +26,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.operation.push
 import com.example.kotlincompose.home.viewmodel.HomeViewModel
+import com.example.routes.LocalNavBackStack
+import com.example.routes.NavTarget
 
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
+    
+    val backStack = LocalNavBackStack.current
     
     LazyColumn(
         modifier = Modifier
@@ -35,31 +45,25 @@ fun HomeScreen(homeViewModel: HomeViewModel = viewModel()) {
         item {
             Column {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = "Find your favorite movie",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                
                 Spacer(modifier = Modifier.height(5.dp))
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = { Text(text = "Search movie") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    textStyle = TextStyle(fontSize = 18.sp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Find your favorite movie",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
                     )
-                )
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = "Search Icon",
+                        modifier = Modifier.clickable {
+                            backStack.push(NavTarget.Search)
+                        })
+                }
                 Spacer(modifier = Modifier.height(15.dp))
                 // PASS VIEW MODEL AS PARAMATER
                 CategoryCompose(homeViewModel)

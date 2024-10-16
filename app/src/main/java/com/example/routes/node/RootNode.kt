@@ -48,6 +48,10 @@ class RootNode(
                 val movieId = navTarget.id
                 MovieDetailNode(buildContext, movieId = movieId)
             }
+            
+            is NavTarget.Search -> {
+                SearchNode(buildContext)
+            }
         }
     }
 }

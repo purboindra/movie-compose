@@ -25,12 +25,12 @@ class MovieDetailViewModel(
     override fun handleIntent(appIntent: MovieDetailIntent) {
         when (appIntent) {
             is MovieDetailIntent.MovieDetail -> {
-                fetchMovieBtyId(appIntent.id)
+                fetchMovieById(appIntent.id)
             }
         }
     }
     
-    private fun fetchMovieBtyId(id: String) = viewModelScope.launch {
+    private fun fetchMovieById(id: String) = viewModelScope.launch {
         movieRepository.movieById(id).stateIn(this).collectLatest { state ->
             updateDetailMovieModel {
                 it.copy(
