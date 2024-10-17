@@ -61,7 +61,7 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
         
         _searchQuery.debounce(300).filter { !it.isNullOrEmpty() }.distinctUntilChanged()
             .flatMapLatest { query ->
-                movieRepository.search(null, query)
+                movieRepository.search(1, query)
             }
             .collectLatest { state ->
                 _searchMovieState.value = state

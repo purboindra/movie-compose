@@ -3,11 +3,16 @@ package com.example.kotlincompose.search
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,26 +24,40 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.bumble.appyx.navmodel.backstack.operation.pop
+import com.bumble.appyx.navmodel.backstack.operation.push
 import com.example.base.State
 import com.example.entity.data.Movie
+import com.example.kotlincompose.home.rating
 import com.example.kotlincompose.search.viewmodel.SearchViewModel
 import com.example.routes.LocalNavBackStack
+import com.example.routes.NavTarget
+import com.example.utils.formatReleaseDate
+import com.example.utils.imageLoader
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -49,6 +68,8 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
     val searchState by searchViewModel.searchMovieState.collectAsState()
     
     val query by searchViewModel.searchQuery.collectAsState()
+    
+    val context = LocalContext.current
     
     Scaffold(topBar = {
         TopAppBar(
@@ -96,12 +117,80 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
             
             when (searchState) {
                 is State.Loading -> {
-                    CircularProgressIndicator()
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
                 
                 is State.Success -> {
                     val movies = (searchState as State.Success<Movie>).data.results
-                    Text(text = "Hello9")
+                    LazyColumn {
+                        itemsIndexed(movies) { _, movie ->
+                            Card(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White,
+                                ),
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = 2.dp
+                                ),
+                                onClick = {
+                                    backStack.push(NavTarget.MovieDetail(movie.id.toString()))
+                                },
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier.padding(
+                                        horizontal = 12.dp,
+                                        vertical = 6.dp
+                                    )
+                                ) {
+                                    Row {
+                                        AsyncImage(
+                                            model = "https://image.tmdb.org/t/p/w500/${movie.posterPath}",
+                                            contentDescription = movie.title,
+                                            modifier = Modifier
+                                                .width(64.dp)
+                                                .height(64.dp)
+                                                .clip(RoundedCornerShape(8.dp)),
+                                            contentScale = ContentScale.Crop,
+                                            imageLoader = imageLoader(context = context)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Column {
+                                            Text(text = movie.title)
+                                            Spacer(modifier = Modifier.height(5.dp))
+                                            Text(
+                                                text = movie?.releaseDate?.let {
+                                                    formatReleaseDate(
+                                                        it
+                                                    )
+                                                }.orEmpty(),
+                                                color = Color(0xff858585)
+                                            )
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.Star,
+                                                    contentDescription = "Rating",
+                                                    tint = Color(0xFFFFC319),
+                                                    modifier = Modifier.size(18.dp),
+                                                )
+                                                Spacer(modifier = Modifier.width(2.dp))
+                                                Text(
+                                                    text = rating(movie.voteAverage),
+                                                    color = Color(0xff9C9C9C),
+                                                    fontSize = 13.sp
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 is State.Failure -> {
@@ -110,7 +199,9 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
                 }
                 
                 else -> {
-                    // Handle idle or other states if necessary
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text("Movie not found")
+                    }
                 }
             }
         }
