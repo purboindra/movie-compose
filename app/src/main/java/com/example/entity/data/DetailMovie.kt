@@ -9,7 +9,7 @@ data class DetailMovie(
     @SerialName("adult")
     val adult: Boolean,
     @SerialName("backdrop_path")
-    val backdropPath: String,
+    val backdropPath: String? = null,
     @SerialName("belongs_to_collection")
     val belongsToCollection: BelongsToCollection? = null,
     @SerialName("budget")
@@ -33,7 +33,7 @@ data class DetailMovie(
     @SerialName("popularity")
     val popularity: Double,
     @SerialName("poster_path")
-    val posterPath: String,
+    val posterPath: String? = null,
     @SerialName("production_companies")
     val productionCompanies: List<ProductionCompany>,
     @SerialName("production_countries")
@@ -62,13 +62,13 @@ data class DetailMovie(
     @Serializable
     data class BelongsToCollection(
         @SerialName("backdrop_path")
-        val backdropPath: String,
+        val backdropPath: String? = null,
         @SerialName("id")
         val id: Int,
         @SerialName("name")
         val name: String,
         @SerialName("poster_path")
-        val posterPath: String
+        val posterPath: String? = null
     )
     
     @Serializable
