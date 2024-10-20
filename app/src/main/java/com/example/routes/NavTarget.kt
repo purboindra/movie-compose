@@ -12,5 +12,8 @@ sealed class NavTarget : Parcelable {
     object Search : NavTarget()
     
     @Parcelize
+    object Login : NavTarget()
+    
+    @Parcelize
     data class MovieDetail(val id: String) : NavTarget()
 }

@@ -1,13 +1,11 @@
 package com.example.routes.node
 
-import android.content.res.Resources.Theme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.bumble.appyx.core.composable.Children
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -21,7 +19,7 @@ import com.example.routes.NavTarget
 class RootNode(
     buildContext: BuildContext,
     private val backStack: BackStack<NavTarget> = BackStack(
-        initialElement = NavTarget.Main,
+        initialElement = NavTarget.Login,
         savedStateMap = buildContext.savedStateMap,
     ),
 ) : ParentNode<NavTarget>(
@@ -47,6 +45,10 @@ class RootNode(
             is NavTarget.MovieDetail -> {
                 val movieId = navTarget.id
                 MovieDetailNode(buildContext, movieId = movieId)
+            }
+            
+            is NavTarget.Login -> {
+                LoginNode(buildContext)
             }
             
             is NavTarget.Search -> {

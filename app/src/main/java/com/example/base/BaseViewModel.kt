@@ -31,6 +31,28 @@ abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : V
         MutableStateFlow(defaultModel)
     val stateSearchMovieModel: StateFlow<MODEL> get() = mutableStateSearchMovieModel
     
+    // AUTH
+    private val mutableRequestTokenModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
+    val stateRequestTokenModel: StateFlow<MODEL> get() = mutableRequestTokenModel
+    
+    private val mutableCreateSessionModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
+    val stateCreateSessionModel: StateFlow<MODEL> get() = mutableCreateSessionModel
+    
+    private val mutableLoginStateModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)
+    val stateLoginModel: StateFlow<MODEL> get() = mutableLoginStateModel
+    
+    fun updateRequestTokenModel(block: (MODEL) -> MODEL) {
+        mutableRequestTokenModel.update(block)
+    }
+    
+    fun updateCreateSessionModel(block: (MODEL) -> MODEL) {
+        mutableCreateSessionModel.update(block)
+    }
+    
+    fun updateLoginModel(block: (MODEL) -> MODEL) {
+        mutableLoginStateModel.update(block)
+    }
+    
     fun updateSearchMovieModel(block: (MODEL) -> MODEL) {
         mutableStateSearchMovieModel.update(block)
     }

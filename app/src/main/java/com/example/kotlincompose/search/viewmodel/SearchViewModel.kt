@@ -34,11 +34,9 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
     private val _searchQuery = MutableStateFlow<String?>(null)
     val searchQuery : StateFlow<String?> get() =  _searchQuery
     
-    // StateFlow for the UI to observe the search result state
     private val _searchMovieState = MutableStateFlow<State<Movie>>(State.Idle)
     val searchMovieState: StateFlow<State<Movie>> = _searchMovieState.asStateFlow()
     
-    // Function to update the search query
     fun onSearchQueryChange(query: String?) {
         _searchQuery.value = query
     }
@@ -46,7 +44,6 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
     init {
         fetchSearchMovie()
     }
-    
     
     override fun handleIntent(appIntent: SearchViewIntent) {
         when (appIntent) {
