@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.base.BaseRepository
 import com.example.base.State
 import com.example.entity.data.DetailMovie
+import com.example.entity.data.RequestTokenResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -14,7 +15,6 @@ class AuthRepository : BaseRepository() {
     fun login(username: String, password: String): Flow<State<Any>> {
         return channelFlow {
             send(State.Loading)
-            
             try {
                 requestToken().collectLatest { requestTokenState ->
                     when (requestTokenState) {
@@ -29,7 +29,7 @@ class AuthRepository : BaseRepository() {
                             createSession(
                                 username,
                                 password,
-                                "$token"
+                                token.requestToken,
                             ).collectLatest { createSessionState ->
                                 when (createSessionState) {
                                     is State.Success -> {
@@ -88,10 +88,11 @@ class AuthRepository : BaseRepository() {
         }
     }
     
-    fun requestToken(): Flow<State<Any>> {
+    fun requestToken(): Flow<State<RequestTokenResponse>> {
         return suspend {
             fetchHttpResponse("https://api.themoviedb.org/3/authentication/token/new")
-        }.reduce<Any, Any> { response ->
+        }.reduce<RequestTokenResponse, RequestTokenResponse> { response ->
+            Log.d("requestToken","Response requestToken :${response}")
             State.Success(response)
         }
     }
