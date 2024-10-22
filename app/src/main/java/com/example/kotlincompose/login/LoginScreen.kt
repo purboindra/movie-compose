@@ -16,6 +16,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -68,13 +71,21 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
 
     val context = LocalContext.current
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var usernameError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
     var showPassword by remember { mutableStateOf(false) }
 
+    Scaffold(modifier = Modifier.fillMaxSize(), scaffoldState,
+        snackbarHost = {
+            SnackbarHost(it) { data ->
+                Snackbar( backgroundColor = Color.Red ,snackbarData = data)
+            }
+        }
 
-    Scaffold(modifier = Modifier.fillMaxSize(), scaffoldState) { paddingValues ->
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -169,6 +180,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
                         }
 
                         if (usernameError == null || passwordError == null) {
+                            keyboardController?.hide()
                             coroutineScope.launch {
                                 loginViewModel.handleIntent(
                                     LoginViewModelIntent.Login(

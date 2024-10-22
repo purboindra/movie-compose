@@ -30,6 +30,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -54,19 +56,37 @@ import com.example.routes.LocalNavBackStack
 import com.example.routes.NavTarget
 import com.example.utils.formatReleaseDate
 import com.example.utils.imageLoader
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 
+@OptIn(FlowPreview::class)
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
-    
+
     val backStack = LocalNavBackStack.current
-    
+
     val searchState by searchViewModel.searchMovieState.collectAsState()
-    
+
     val query by searchViewModel.searchQuery.collectAsState()
-    
+
     val context = LocalContext.current
-    
+
+    DisposableEffect(key1 = backStack) {
+        onDispose {
+            searchViewModel.resetSearchState()
+        }
+    }
+
+    LaunchedEffect(query) {
+        searchViewModel.searchQuery.debounce(300).distinctUntilChanged().apply {
+            searchViewModel.fetchSearchMovie()
+        }
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             modifier = Modifier.statusBarsPadding(),
@@ -80,7 +100,7 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
             },
-            
+
             )
     }) { paddingValues ->
         Column(
@@ -110,14 +130,14 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
                     unfocusedContainerColor = Color.White,
                 )
             )
-            
+
             when (searchState) {
                 is State.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
-                
+
                 is State.Success -> {
                     val movies = (searchState as State.Success<Movie>).data.results
                     LazyColumn {
@@ -159,7 +179,7 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
                                             Text(text = movie.title)
                                             Spacer(modifier = Modifier.height(5.dp))
                                             Text(
-                                                text = movie?.releaseDate?.let {
+                                                text = movie.releaseDate?.let {
                                                     formatReleaseDate(
                                                         it
                                                     )
@@ -188,12 +208,12 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
                         }
                     }
                 }
-                
+
                 is State.Failure -> {
                     val error = (searchState as State.Failure).throwable
                     Text(text = error.message.orEmpty())
                 }
-                
+
                 else -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Movie not found")

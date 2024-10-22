@@ -29,6 +29,7 @@ fun formatReleaseDate(
     inputFormatType: String? = null,
     outputFormatType: String? = null
 ): String {
+    if (releaseDate.isEmpty()) return "-"
     val inputFormatter = SimpleDateFormat(inputFormatType ?: "yyyy-MM-dd", Locale.getDefault())
     val outputFormatter = SimpleDateFormat(outputFormatType ?: "dd MM yyyy", Locale.getDefault())
     val date = inputFormatter.parse(releaseDate)
