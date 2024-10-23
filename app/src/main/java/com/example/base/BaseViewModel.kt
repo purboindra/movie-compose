@@ -1,12 +1,19 @@
 package com.example.base
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : ViewModel() {
-    
+
+    override fun onCleared() {
+        Log.d("BaseViewModel", "onCleared called")
+        super.onCleared()
+    }
+
+
     abstract fun handleIntent(appIntent: INTENT)
     
     private val mutableStateModel: MutableStateFlow<MODEL> = MutableStateFlow(defaultModel)

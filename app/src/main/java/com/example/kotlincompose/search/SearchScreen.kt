@@ -1,6 +1,7 @@
 package com.example.kotlincompose.search
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 
-@OptIn(FlowPreview::class)
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
@@ -75,15 +75,17 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
 
     val context = LocalContext.current
 
+//    LaunchedEffect(key1 = backStack.screenState.value) {
+//        searchViewModel.observeSearchQuery()
+//    }
+
     DisposableEffect(key1 = backStack) {
         onDispose {
             searchViewModel.resetSearchState()
-        }
-    }
-
-    LaunchedEffect(query) {
-        searchViewModel.searchQuery.debounce(300).distinctUntilChanged().apply {
-            searchViewModel.fetchSearchMovie()
+            Log.d(
+                "dispose",
+                "${backStack.screenState.value.offScreen} === ${backStack.screenState.value.offScreen}"
+            )
         }
     }
 

@@ -48,9 +48,14 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
         _searchQuery.value = null
     }
 
-//    init {
-//        fetchSearchMovie()
-//    }
+    override fun onCleared() {
+        resetSearchState()
+        super.onCleared()
+    }
+
+    init {
+        observeSearchQuery()
+    }
 
     override fun addCloseable(closeable: AutoCloseable) {
         Log.d("addCloseable","Closeable autoclose")
@@ -66,13 +71,17 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-     fun fetchSearchMovie() = viewModelScope.launch {
-        _searchQuery.debounce(300).filter { !it.isNullOrEmpty() }.distinctUntilChanged()
-            .flatMapLatest { query ->
-                movieRepository.search(1, query)
-            }
-            .collectLatest { state ->
-                _searchMovieState.value = state
-            }
+    private fun observeSearchQuery() {
+        viewModelScope.launch {
+            _searchQuery.debounce(300)
+                .filter { !it.isNullOrEmpty() }
+                .distinctUntilChanged()
+                .flatMapLatest { query ->
+                    movieRepository.search(1, query)
+                }
+                .collectLatest { state ->
+                    _searchMovieState.value = state
+                }
+        }
     }
 }
