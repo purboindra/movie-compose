@@ -33,6 +33,10 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
         SearchMovieModel()
     ) {
 
+    protected override fun performCleanup() {
+        super.performCleanup()
+    }
+
     private val _searchQuery = MutableStateFlow<String?>(null)
     val searchQuery: StateFlow<String?> get() = _searchQuery
 

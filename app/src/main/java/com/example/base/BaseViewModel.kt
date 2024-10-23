@@ -8,9 +8,16 @@ import kotlinx.coroutines.flow.update
 
 abstract class BaseViewModel<MODEL, INTENT>(private val defaultModel: MODEL) : ViewModel() {
 
-    override fun onCleared() {
-        Log.d("BaseViewModel", "onCleared called")
-        super.onCleared()
+    // Override onCleared here
+    protected override fun onCleared() {
+        // Call a protected function for cleanup that subclasses can override
+        performCleanup()
+        super.onCleared() // Always call super to ensure proper ViewModel cleanup
+    }
+
+    // Protected function to be overridden by subclasses
+    protected open fun performCleanup() {
+        // Default cleanup logic (if any)
     }
 
 
