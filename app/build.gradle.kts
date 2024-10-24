@@ -3,7 +3,12 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlinSerializer)
     id("kotlin-parcelize")
-    
+//    kotlin("kapt")
+//    id ("com.google.dagger.hilt.android") version "2.52" apply false
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
+//    id("kotlin-kapt")
+//    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -98,4 +103,8 @@ dependencies {
     
     // COMPOSE SHIMMER
     implementation(libs.compose.shimmer)
+
+    // HILT
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler) // Use kapt for the Hilt compiler
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class HomeIntent {
     data class PopularMovie(val genres: String? = null) : HomeIntent()
@@ -26,33 +27,33 @@ data class HomeModel(
     val categoryResponseState: State<Category> = State.Idle,
 )
 
-class HomeViewModel(
+class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository = MovieRepository()
 ) : BaseViewModel<HomeModel, HomeIntent>(HomeModel()) {
-    
+
     private var hasLoadedPopularMovies = false
     private var hasLoadedNowPlayingMovies = false
     private var hasLoadedCategories = false
-    
+
     private var _categoryId: MutableStateFlow<String?> = MutableStateFlow(null)
-    
+
     private var _categoryIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
     val categoryIndex: StateFlow<Int?> = _categoryIndex.asStateFlow()
-    
-    
+
+
     fun onTapCategory(id: String) {
         if (id != _categoryId.value) {
             _categoryId.update { id }
             fetchPopularMovie(id)
         }
     }
-    
+
     fun onTapCategoryIndex(index: Int) {
         _categoryIndex.update { index }
     }
-    
+
     override fun handleIntent(appIntent: HomeIntent) {
-        
+
         when (appIntent) {
             is HomeIntent.PopularMovie -> {
                 if (!hasLoadedPopularMovies) {
@@ -60,14 +61,14 @@ class HomeViewModel(
                     fetchPopularMovie(appIntent.genres)
                 }
             }
-            
+
             is HomeIntent.NowPlaying -> {
                 if (!hasLoadedNowPlayingMovies) {
                     hasLoadedNowPlayingMovies = true
                     fetchNowPlayingMovie()
                 }
             }
-            
+
             is HomeIntent.Categories -> {
                 if (!hasLoadedCategories) {
                     hasLoadedCategories = true
@@ -76,7 +77,7 @@ class HomeViewModel(
             }
         }
     }
-    
+
     private fun fetchCategories() = viewModelScope.launch {
         movieRepository.categories().stateIn(this)
             .collectLatest { state ->
@@ -85,15 +86,15 @@ class HomeViewModel(
                 }
             }
     }
-    
+
     private fun fetchPopularMovie(genres: String? = null) = viewModelScope.launch {
         movieRepository.popularMovie(genres).stateIn(this).collectLatest { state ->
-           updateModel {
+            updateModel {
                 it.copy(movieResponseState = state)
             }
         }
     }
-    
+
     private fun fetchNowPlayingMovie() = viewModelScope.launch {
         movieRepository.nowPlayingMovie().stateIn(this).collectLatest { state ->
             updateNowPLayingModel {
