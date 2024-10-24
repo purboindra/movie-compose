@@ -21,12 +21,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.serialization.json.Json
-import javax.inject.Inject
 
 const val accessToken =
     "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYTM4YzYyOWEzMTY1Mjc1NjllYmM5M2NlN2JiNDIxZiIsIm5iZiI6MTcyOTQxOTQxNC4xODU1MTcsInN1YiI6IjYyY2Q0ZjkyZTgxMzFkMWRjOWYzMzliZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.N8auHGHUwyaWceE9u8LnHYEueEhGR7lNhXv8n_cg4OE"
 
-abstract class BaseRepository  @Inject constructor() {
+abstract class BaseRepository  {
     private val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {

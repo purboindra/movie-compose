@@ -6,9 +6,8 @@ import com.example.entity.data.Category
 import com.example.entity.data.DetailMovie
 import com.example.entity.data.Movie
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class MovieRepository @Inject constructor() : BaseRepository() {
+class MovieRepository  : BaseRepository() {
     fun popularMovie(genres: String? = null): Flow<State<Movie>> {
         return suspend {
             var url =
