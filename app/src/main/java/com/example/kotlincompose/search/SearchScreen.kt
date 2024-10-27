@@ -45,6 +45,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bumble.appyx.navmodel.backstack.operation.pop
@@ -63,10 +67,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
-
     val backStack = LocalNavBackStack.current
 
     val searchState by searchViewModel.searchMovieState.collectAsState()
@@ -74,20 +76,28 @@ fun SearchScreen(searchViewModel: SearchViewModel = viewModel()) {
     val query by searchViewModel.searchQuery.collectAsState()
 
     val context = LocalContext.current
-
-//    LaunchedEffect(key1 = backStack.screenState.value) {
-//        searchViewModel.observeSearchQuery()
-//    }
-
-    DisposableEffect(key1 = backStack) {
+    
+    val lifecycleOwner = LocalLifecycleOwner.current
+    
+    DisposableEffect(lifecycleOwner) {
+        val lifecycle = lifecycleOwner.lifecycle
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                searchViewModel.observeSearchQuery()
+                Log.d("SearchScreen", "Screen resumed, triggering search observation")
+            }
+        }
+        
+        lifecycle.addObserver(observer)
+        
         onDispose {
-            searchViewModel.resetSearchState()
-            Log.d(
-                "dispose",
-                "${backStack.screenState.value.offScreen} === ${backStack.screenState.value.offScreen}"
-            )
+            Log.d("SearchScreen","onDispose Method Called")
+          searchViewModel.resetSearchState()
+            lifecycle.removeObserver(observer)
         }
     }
+    
+ 
 
     Scaffold(topBar = {
         TopAppBar(
