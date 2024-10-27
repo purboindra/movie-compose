@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 sealed class HomeIntent {
     data class PopularMovie(val genres: String? = null) : HomeIntent()
@@ -27,7 +26,7 @@ data class HomeModel(
     val categoryResponseState: State<Category> = State.Idle,
 )
 
-class HomeViewModel @Inject constructor(
+class HomeViewModel (
     private val movieRepository: MovieRepository = MovieRepository()
 ) : BaseViewModel<HomeModel, HomeIntent>(HomeModel()) {
 
