@@ -1,6 +1,7 @@
 package com.example.kotlincompose.search.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
 import com.example.base.BaseViewModel
 import com.example.base.State
@@ -28,44 +29,48 @@ data class SearchMovieModel(
     val searchMovieState: State<Movie> = State.Idle
 )
 
-class SearchViewModel(private val movieRepository: MovieRepository = MovieRepository()) :
+class SearchViewModel(
+    private val movieRepository: MovieRepository = MovieRepository(),
+) :
     BaseViewModel<SearchMovieModel, SearchViewIntent>(
         SearchMovieModel()
     ) {
-
+    
     protected override fun performCleanup() {
+        Log.d("perFormCleanUp searchViewModel","perFormCleanUp SearchViewModel Called")
         super.performCleanup()
     }
-
+    
     private val _searchQuery = MutableStateFlow<String?>(null)
     val searchQuery: StateFlow<String?> get() = _searchQuery
-
+    
     private val _searchMovieState = MutableStateFlow<State<Movie>>(State.Idle)
     val searchMovieState: StateFlow<State<Movie>> = _searchMovieState.asStateFlow()
-
+    
     fun onSearchQueryChange(query: String?) {
         _searchQuery.value = query
     }
-
+    
     fun resetSearchState() {
         _searchMovieState.value = State.Idle
         _searchQuery.value = null
     }
-
+    
     override fun onCleared() {
         resetSearchState()
         super.onCleared()
     }
-
+    
     init {
+        Log.d("init searchViewModel","Init Search View Model")
         observeSearchQuery()
     }
-
+    
     override fun addCloseable(closeable: AutoCloseable) {
-        Log.d("addCloseable","Closeable autoclose")
+        Log.d("addCloseable searchViewModel", "Closeable autoclose")
         super.addCloseable(closeable)
     }
-
+    
     override fun handleIntent(appIntent: SearchViewIntent) {
         when (appIntent) {
             is SearchViewIntent.SearchMovie -> {
@@ -73,9 +78,9 @@ class SearchViewModel(private val movieRepository: MovieRepository = MovieReposi
             }
         }
     }
-
+    
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    private fun observeSearchQuery() {
+    fun observeSearchQuery() {
         viewModelScope.launch {
             _searchQuery.debounce(300)
                 .filter { !it.isNullOrEmpty() }

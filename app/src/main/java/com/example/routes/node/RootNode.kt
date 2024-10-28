@@ -21,7 +21,7 @@ import com.example.routes.NavTarget
 class RootNode(
     buildContext: BuildContext,
     private val backStack: BackStack<NavTarget> = BackStack(
-        initialElement = NavTarget.Login,
+        initialElement = NavTarget.Splash,
         savedStateMap = buildContext.savedStateMap,
     ),
 ) : ParentNode<NavTarget>(
@@ -29,7 +29,7 @@ class RootNode(
     navModel = backStack
 ) {
 
-    
+
     @Composable
     override fun View(modifier: Modifier) {
         CompositionLocalProvider(LocalNavBackStack provides backStack) {
@@ -54,11 +54,13 @@ class RootNode(
                 val movieId = navTarget.id
                 MovieDetailNode(buildContext, movieId = movieId)
             }
-            
+
+            is NavTarget.Splash -> SplashNode(buildContext)
+
             is NavTarget.Login -> {
                 LoginNode(buildContext)
             }
-            
+
             is NavTarget.Search -> {
                 SearchNode(buildContext)
             }
