@@ -297,7 +297,11 @@ fun MovieDetailScreen(
                             modifier = modifier.fillMaxWidth(),
                         ) {
                             if (isLoading) CircularProgressIndicator() else Text(
-                                "Buy Ticket",
+                                if (movieDetailViewModel.hasTicket(
+                                        movie.id.toString(),
+                                        context
+                                    )
+                                ) "Check Ticket" else "Buy Ticket",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium
                             )

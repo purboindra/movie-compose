@@ -43,6 +43,14 @@ class MovieDetailViewModel(
         }
     }
     
+    fun hasTicket(id: String, context: Context): Boolean {
+        val ticketPrefs = PreferenceManager.getString(prefsTicketKey, context) ?: return false
+        val ticketList = Json.decodeFromString<MutableList<TicketPref>>(ticketPrefs)
+        return ticketList.any { it ->
+            it.id == id
+        }
+    }
+    
     suspend fun buyTicket(id: String, context: Context) {
         _isLoading.value = true
         delay(1500)
