@@ -1,4 +1,5 @@
 package com.example.kotlincompose.movie.detail
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,19 +20,26 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,48 +53,72 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.example.base.State
+import com.example.entity.data.TicketPref
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.rating
 import com.example.kotlincompose.movie.detail.viewmodel.MovieDetailIntent
 import com.example.kotlincompose.movie.detail.viewmodel.MovieDetailViewModel
 import com.example.routes.LocalNavBackStack
+import com.example.utils.PreferenceManager
 import com.example.utils.formatReleaseDate
 import com.example.utils.imageLoader
+import com.example.utils.prefsTicketKey
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun MovieDetailScreen(id: String, modifier: Modifier,movieDetailViewModel: MovieDetailViewModel = viewModel()) {
+fun MovieDetailScreen(
+    id: String,
+    modifier: Modifier,
+    movieDetailViewModel: MovieDetailViewModel = viewModel()
+) {
     
     val movieState by movieDetailViewModel.stateDetailMovieModel.collectAsState()
     val backStack = LocalNavBackStack.current
     
     val context = LocalContext.current
     
+    val coroutineScope = rememberCoroutineScope()
+    
+    val scaffoldState = rememberScaffoldState()
+    
+    val isLoading by movieDetailViewModel.isLoading.collectAsState()
+    
     LaunchedEffect(Unit) {
         movieDetailViewModel.handleIntent(MovieDetailIntent.MovieDetail(id))
     }
     
-    Scaffold ( modifier = Modifier.statusBarsPadding(), topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Movie",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = { backStack.pop() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+    Scaffold(modifier = Modifier.statusBarsPadding(), scaffoldState = scaffoldState,
+        snackbarHost = {
+            
+            SnackbarHost(hostState = it) { data ->
+                Snackbar(snackbarData = data)
+            }
+            
+        }, topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Movie",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                }
-            },
-            backgroundColor = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.statusBarsPadding()
-        )
-    }) { innerPadding ->
+                },
+                navigationIcon = {
+                    IconButton(onClick = { backStack.pop() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.statusBarsPadding()
+            )
+        }) { innerPadding ->
         when (val state = movieState.movieDetailState) {
             is State.Idle -> {
                 Box(
@@ -254,11 +286,21 @@ fun MovieDetailScreen(id: String, modifier: Modifier,movieDetailViewModel: Movie
                         )
                         Box(modifier = Modifier.height(15.dp))
                         Button(
-                            onClick = { },
+                            enabled = !isLoading,
+                            onClick = {
+                                coroutineScope.launch {
+                                    movieDetailViewModel.buyTicket(movie.id.toString(), context)
+                                    scaffoldState.snackbarHostState.showSnackbar("Success buy ticket!")
+                                }
+                            },
                             shape = RoundedCornerShape(8.dp),
                             modifier = modifier.fillMaxWidth(),
                         ) {
-                            Text("Buy Ticket", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                            if (isLoading) CircularProgressIndicator() else Text(
+                                "Buy Ticket",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                         
                     }
