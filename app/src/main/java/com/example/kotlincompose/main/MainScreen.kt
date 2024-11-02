@@ -15,20 +15,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.HomeScreen
 
 @Composable
-fun MainScreen() {
+fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
+    
+    val state by mainViewModel.state.collectAsState()
     
     val bodies = listOf<@Composable () -> Unit>(
         { HomeScreen() },
@@ -61,15 +62,13 @@ fun MainScreen() {
         }
     )
     
-    var selectedItem by remember { mutableIntStateOf(0) }
-    
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
                 items = bodies.indices.toList(),
-                selectedItem = selectedItem,
+                selectedItem = state.selectedItem,
                 onItemSelected = { index ->
-                    selectedItem = index
+                    mainViewModel.handleIntent(MainIntent.OnChangeBottomNavbar(index))
                 }
             )
         }
@@ -79,7 +78,7 @@ fun MainScreen() {
                 .padding(innerPadding)
                 .fillMaxSize(), contentAlignment = Alignment.Center
         ) {
-            bodies[selectedItem]()
+            bodies[state.selectedItem]()
         }
     }
 }
