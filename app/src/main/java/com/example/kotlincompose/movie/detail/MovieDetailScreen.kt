@@ -52,13 +52,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bumble.appyx.navmodel.backstack.operation.pop
+import com.bumble.appyx.navmodel.backstack.operation.push
+import com.bumble.appyx.navmodel.backstack.operation.replace
 import com.example.base.State
 import com.example.entity.data.TicketPref
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.rating
+import com.example.kotlincompose.main.MainIntent
+import com.example.kotlincompose.main.MainViewModel
 import com.example.kotlincompose.movie.detail.viewmodel.MovieDetailIntent
 import com.example.kotlincompose.movie.detail.viewmodel.MovieDetailViewModel
 import com.example.routes.LocalNavBackStack
+import com.example.routes.NavTarget
 import com.example.utils.PreferenceManager
 import com.example.utils.formatReleaseDate
 import com.example.utils.imageLoader
@@ -73,7 +78,8 @@ import kotlinx.serialization.json.Json
 fun MovieDetailScreen(
     id: String,
     modifier: Modifier,
-    movieDetailViewModel: MovieDetailViewModel = viewModel()
+    movieDetailViewModel: MovieDetailViewModel = viewModel(),
+    mainViewModel: MainViewModel = viewModel(),
 ) {
     
     val movieState by movieDetailViewModel.stateDetailMovieModel.collectAsState()
@@ -288,10 +294,22 @@ fun MovieDetailScreen(
                         Button(
                             enabled = !isLoading,
                             onClick = {
-                                coroutineScope.launch {
-                                    movieDetailViewModel.buyTicket(movie.id.toString(), context)
-                                    scaffoldState.snackbarHostState.showSnackbar("Success buy ticket!")
+                                
+                                if (movieDetailViewModel.hasTicket(
+                                        movie.id.toString(),
+                                        context
+                                    )
+                                ) {
+                                    mainViewModel.handleIntent(MainIntent.OnChangeBottomNavbar(2))
+                                    backStack.replace(NavTarget.Main)
+                                } else {
+                                    coroutineScope.launch {
+                                        movieDetailViewModel.buyTicket(movie.id.toString(), context)
+                                        scaffoldState.snackbarHostState.showSnackbar("Success buy ticket!")
+                                    }
                                 }
+                                
+                                
                             },
                             shape = RoundedCornerShape(8.dp),
                             modifier = modifier.fillMaxWidth(),
