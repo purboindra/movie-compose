@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.kotlincompose.R
 import com.example.kotlincompose.home.HomeScreen
+import com.example.kotlincompose.ticket.TicketScreen
 
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
@@ -43,13 +44,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
             }
         },
         {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(text = "Placeholder for Ticket")
-            }
+            TicketScreen()
         },
         {
             Column(
