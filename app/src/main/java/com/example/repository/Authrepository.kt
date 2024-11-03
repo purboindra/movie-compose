@@ -5,6 +5,7 @@ import com.example.base.BaseRepository
 import com.example.base.State
 import com.example.entity.data.DetailMovie
 import com.example.entity.data.RequestTokenResponse
+import com.example.utils.baseUrl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,8 +25,6 @@ class AuthRepository : BaseRepository() {
                                 "AuthRepository Login",
                                 "Success login AuthRepository requestTokenState $token"
                             )
-                            
-                            // Now, create the session using the token
                             createSession(
                                 username,
                                 password,
@@ -76,7 +75,7 @@ class AuthRepository : BaseRepository() {
     fun createSession(username: String, password: String, requestToken: String): Flow<State<Any>> {
         return suspend {
             postHttpResponse(
-                "https://api.themoviedb.org/3/authentication/token/validate_with_login",
+                "${baseUrl}/3/authentication/token/validate_with_login",
                 body = mapOf<String, Any>(
                     "username" to username,
                     "password" to password,
@@ -90,7 +89,7 @@ class AuthRepository : BaseRepository() {
     
     fun requestToken(): Flow<State<RequestTokenResponse>> {
         return suspend {
-            fetchHttpResponse("https://api.themoviedb.org/3/authentication/token/new")
+            fetchHttpResponse("${baseUrl}/3/authentication/token/new")
         }.reduce<RequestTokenResponse, RequestTokenResponse> { response ->
             Log.d("requestToken","Response requestToken :${response}")
             State.Success(response)
