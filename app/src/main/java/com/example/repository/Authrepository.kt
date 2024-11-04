@@ -77,8 +77,8 @@ class AuthRepository : BaseRepository() {
             postHttpResponse(
                 "${baseUrl}/3/authentication/token/validate_with_login",
                 body = mapOf<String, Any>(
-                    "username" to username,
-                    "password" to password,
+                    "username" to "purboyndra",
+                    "password" to "Qwerty123@",
                     "request_token" to requestToken
                 ),
             )
@@ -91,7 +91,7 @@ class AuthRepository : BaseRepository() {
         return suspend {
             fetchHttpResponse("${baseUrl}/3/authentication/token/new")
         }.reduce<RequestTokenResponse, RequestTokenResponse> { response ->
-            Log.d("requestToken","Response requestToken :${response}")
+            Log.d("requestToken", "Response requestToken :${response}")
             State.Success(response)
         }
     }
